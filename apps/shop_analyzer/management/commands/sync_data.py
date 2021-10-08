@@ -1,6 +1,8 @@
 import logging
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
+from apps.shop_analyzer.integrations.etsy.sync import EtsySync
 
 logger = logging.getLogger(__name__)
 
@@ -13,4 +15,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        logger.debug("Epaaa")
+        sync = EtsySync(settings.ETSY_KEYSTRING)
+
+        sync.sync()
