@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_extensions'
+    'django_extensions',
+    'apps.shop_analyzer',
 ]
 
 MIDDLEWARE = [
@@ -95,13 +96,13 @@ DATABASES = {
     # ImproperlyConfigured exception if not found
     #
     # The db() method is an alias for db_url().
-    # 'default': env.db(),
+    'default': env.db(),
 
-    # # read os.environ['SQLITE_URL']
-    # 'extra': env.db_url(
-    #     'SQLITE_URL',
-    #     default='sqlite:////tmp/my-tmp-sqlite.db'
-    # )
+    # read os.environ['SQLITE_URL']
+    'extra': env.db_url(
+        'SQLITE_URL',
+        default='sqlite:////tmp/my-tmp-sqlite.db'
+    )
 }
 
 
@@ -147,3 +148,24 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Etsy data
+ETSY_KEYSTRING = env('ETSY_KEYSTRING')
+ETSY_SHARED_SECRET = env('ETSY_SHARED_SECRET')
+
+# This variable can be getted using an etsy endpoint. Due to time we use it as a normal variable
+# check the endpoint https://developers.etsy.com/documentation/reference/#operation/ping
+ETSY_APP_ID = env('ETSY_APP_ID')
+
+ETSY_SHOP_NAMES = [
+    'DISEDINA',
+    'CirquellCuriosities',
+    'Boorooroom',
+    'HauntedStories',
+    'CursedByDesign',
+    'BlendedExtreme',
+    'SuuperPaper',
+    'simbiosisbyjulia',
+    'SKYWORLDPROJECT',
+    'moticas',
+]
