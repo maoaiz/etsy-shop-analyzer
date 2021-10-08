@@ -28,7 +28,9 @@ class EtsyClient(RestClient):
 
         super().__init__(api_url, verbose=verbose)
 
-        self.timeout = (settings.CLIENT_CONNECT_TIMEOUT, settings.CLIENT_READ_TIMEOUT)
+        self.timeout = (
+            settings.CLIENT_CONNECT_TIMEOUT, settings.CLIENT_READ_TIMEOUT
+        )
 
         self.key_string = key_string
         self.headers['x-api-key'] = self.key_string
@@ -61,7 +63,9 @@ class EtsyClient(RestClient):
         # Defines the total number of objects that match a query.
         count = int(response.get('count', '0'))
 
-        self.logger.debug(f'Total objects returned (count): {count}, limit: {limit}, offset: {offset}')
+        self.logger.debug(
+            f'Total objects (count): {count} limit: {limit} offset: {offset}'
+        )
 
         offset = int(offset)
 
@@ -81,9 +85,11 @@ class EtsyClient(RestClient):
             offset = next_page * limit
             params['offset'] = offset
 
-            self.logger.debug(f"New request to {endpoint} with offset: {offset}")
+            self.logger.debug(f"New request to {endpoint}. Offset: {offset}")
 
-            status_code, response = self.perform_request(endpoint, params=params)
+            status_code, response = self.perform_request(
+                endpoint, params=params
+            )
 
             data = response.get('results', [])
 
@@ -100,3 +106,24 @@ class EtsyClient(RestClient):
 
         self.logger.debug(f'Getting shops data by name "{shop_name}"')
         return self._request_all(f'/shops?shop_name={shop_name}')
+
+    def get_shop_by_id(self, user_id):
+        """
+        Returns a single shop.
+        A shop is a store in Etsy platform.
+        """
+
+        self.logger.debug(f'Getting shop by id: "{user_id}"')
+        _, response = self.perform_request(f'/shops/{user_id}')
+        return response
+
+    def get_items_by_shop(self, shop_id):
+        """
+        Returns a shop list with the shops data.
+        A shop is a store in Etsy platform.
+
+        We are usign the public API, only public items can be returned.
+        """
+
+        self.logger.debug(f'Getting items for shop "{shop_id}"')
+        return self._request_all(f'/shops/{shop_id}/listings/active')

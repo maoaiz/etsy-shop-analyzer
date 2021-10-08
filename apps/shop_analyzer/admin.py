@@ -31,7 +31,11 @@ class ShopAdmin(ReadOnly, admin.ModelAdmin):
         'name',
         'title',
         'url',
+        'items_synced'
     ]
+
+    def items_synced(self, obj):
+        return obj.item_set.all().count()
 
 
 admin.site.register(Item, ItemAdmin)

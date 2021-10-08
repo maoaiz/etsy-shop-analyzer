@@ -215,15 +215,15 @@ ETSY_SHARED_SECRET = env('ETSY_SHARED_SECRET')
 # check the endpoint https://developers.etsy.com/documentation/reference/#operation/ping
 ETSY_APP_ID = env('ETSY_APP_ID')
 
-ETSY_SHOP_NAMES = [
-    'DISEDINA',
-    'CirquellCuriosities',
-    'Boorooroom',
-    'HauntedStories',
-    'CursedByDesign',
-    'BlendedExtreme',
-    'SuuperPaper',
-    'simbiosisbyjulia',
-    'SKYWORLDPROJECT',
-    'moticas',
+ETSY_SHOP_IDS = [
+    17814318,  # HauntedStories
+    14386188,  # Boorooroom
+    9835674,  # CirquellCuriosities
+    5125128,  # simbiosisbyjulia
+    10956897,  # SuuperPaper
+    21676911,  # BlendedExtreme
+    7559854,  # SKYWORLDPROJECT
+    12448432,  # moticas
+    19746707,  # CursedByDesign
+    15224627,  # DISEDINA
 ]
