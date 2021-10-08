@@ -11,8 +11,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 import environ
+import logging
 import os
 from pathlib import Path
+
+from django.utils.log import DEFAULT_LOGGING
 
 env = environ.Env(
     DEBUG=(bool, False),
@@ -52,8 +55,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+]
+
+OUR_APPS = [
     'apps.shop_analyzer',
 ]
+INSTALLED_APPS += OUR_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -148,6 +155,51 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGLEVEL = env('LOGLEVEL')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+        },
+        'django.server': DEFAULT_LOGGING['formatters']['django.server'],
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console',
+        },
+        'django.server': DEFAULT_LOGGING['handlers']['django.server'],
+    },
+    'loggers': {
+        '': {
+            'level': 'WARNING',
+            'handlers': [
+                'console',
+            ],
+        },
+        'huey': {
+            'level': 'INFO',
+            'handlers': [
+                'console',
+            ],
+            'propagate': False,
+        },
+        'django.server': DEFAULT_LOGGING['loggers']['django.server'],
+    },
+}
+# add env configurable logging to our apps only to prevent flooding the logs with django debug stuff
+for app in OUR_APPS:
+    LOGGING['loggers'][app] = {
+        'level': LOGLEVEL,
+        'handlers': [
+            'console',
+        ],
+        'propagate': False,
+    }
+logging.config.dictConfig(LOGGING)
 
 # Etsy data
 ETSY_KEYSTRING = env('ETSY_KEYSTRING')
