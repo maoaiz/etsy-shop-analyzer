@@ -19,6 +19,9 @@ from django.utils.log import DEFAULT_LOGGING
 
 env = environ.Env(
     DEBUG=(bool, False),
+    CLIENT_CONNECT_TIMEOUT=(float, 10.0),
+    CLIENT_READ_TIMEOUT=(float, 60.0),
+
 )
 
 
@@ -200,6 +203,9 @@ for app in OUR_APPS:
         'propagate': False,
     }
 logging.config.dictConfig(LOGGING)
+
+CLIENT_CONNECT_TIMEOUT = env('CLIENT_CONNECT_TIMEOUT')
+CLIENT_READ_TIMEOUT = env('CLIENT_READ_TIMEOUT')
 
 # Etsy data
 ETSY_KEYSTRING = env('ETSY_KEYSTRING')

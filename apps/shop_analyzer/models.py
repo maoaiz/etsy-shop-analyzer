@@ -13,6 +13,25 @@ class Shop(models.Model):
     def __str__(self):
         return self.name or f'<No name> id={self.id}'
 
+    @staticmethod
+    def get_unsynced_shop_names(shop_names):
+        '''
+        Returs a list of shop names that are not already synced to the database.
+        Parameters:
+        -----------
+        shop_names: list
+            The list of shop names to check
+        '''
+        shop_names = set(shop_names)
+
+        qs = Shop.objects.filter(name__in=shop_names)
+
+        already_synced_shops = list(qs.values_list('name', flat=True))
+
+        shop_names.difference_update(set(already_synced_shops))
+
+        return list(shop_names)
+
 class Item(models.Model):
 
     shop = models.ForeignKey('Shop', on_delete=models.PROTECT)
