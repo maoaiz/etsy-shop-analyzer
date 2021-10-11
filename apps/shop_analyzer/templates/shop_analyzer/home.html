@@ -57,8 +57,14 @@
       },
       methods: {
         get_data: function(shop){
-          this.message = message;
           this.selected_shop = shop;
+
+          // if the data is alread in the object we prevent go to the server
+          if (this.selected_shop.data){
+            return;
+          }
+
+          this.message = message;
           var url = "{% url 'shop_analyzer:get_data' 0 %}";
           url = url.replace("/0/", "/" + shop.id + "/");
           axios
