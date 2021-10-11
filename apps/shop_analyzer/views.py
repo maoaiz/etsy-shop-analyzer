@@ -27,11 +27,11 @@ def get_data(request, s_pk):
 
     limit = request.GET.get('limit', 5)
 
-    top_data = shop_obj.get_meaningful_terms(limit)
+    terms_data = shop_obj.get_meaningful_terms(limit)
 
     data = {
         "total_items": shop_obj.get_num_items(),
-        "top_data": top_data,
+        "terms": terms_data,
     }
 
     return JsonResponse(data, encoder=DjangoJSONEncoder, safe=False)

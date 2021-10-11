@@ -36,20 +36,19 @@
           <table class="table table-sm">
             <thead>
               <tr>
-                <th>Num.</th>
-                <th>Item</th>
-                <th><span v-text="order_by"></span></th>
+                <th>#</th>
+                <th v-for="title in selected_shop.terms.titles"><span v-text="title"></span></th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, index) in selected_shop.data.top_data">
+              <tr v-for="(term, index) in selected_shop.terms.data">
                 <td><span v-text="index + 1"></span></td>
                 <td>
-                  <div v-text="item.name"></div>
-                  <div v-text="item.title"></div>
-                  <a :href="item.url" target="_blank" class="text-muted">View item</a>
+                  <div v-text="term[0]"></div>
                 </td>
-                <td><span v-text="item[order_by]"></span></td>
+                <td>
+                  <div v-text="term[1]"></div>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -84,14 +83,11 @@
       el: '#app',
       data: {
         shops: [{% for shop_obj in shops_qs %}
-          {id: {{ shop_obj.id }}, name: "{{ shop_obj.name }}", title: "{{ shop_obj.title }}", url: "{{ shop_obj.url }}", data: []},
+          {id: {{ shop_obj.id }}, name: "{{ shop_obj.name }}", title: "{{ shop_obj.title }}", url: "{{ shop_obj.url }}", terms: []},
         {% endfor %}],
         selected_shop: null,
         message: '',
         limit: 5,
-        order_by: 'num_favorers',
-        order_type: 'desc',
-        orders: [{% for oby in orders %}'{{ oby }}',{% endfor %}],
         item_id: null,
       },
       methods: {
@@ -111,25 +107,20 @@
           var url = "{% url 'shop_analyzer:get_data' 0 %}";
           url = url.replace("/0/", "/" + shop.id + "/");
           axios
-            .get(url, {params: {'limit': this.limit, order_by: this.order_by, order_type: this.order_type}})
+            .get(url, {params: {'limit': this.limit}})
             .then(response => {
               if (response.status != 200){
                 console.log("Error");
               }else{
-                this.selected_shop.data = response.data;
-                this.message = `<strong>${this.selected_shop.name}</strong> has ${this.selected_shop.data.total_items} items. This is the Top ${this.limit}:`;
+                this.selected_shop.terms = response.data.terms;
+                const total = response.data.total_items;
+                this.message = `<strong>${this.selected_shop.name}</strong> has ${total} items. This is the Top ${this.limit}:`;
               }
             })
         },
       },
       watch: {
         item_id: function(a, b){
-          this.get_data(new Event("click"));
-        },
-        order_by: function(a, b){
-          this.get_data(new Event("click"));
-        },
-        order_type: function(a, b){
           this.get_data(new Event("click"));
         },
         limit: function(a, b){

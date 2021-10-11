@@ -1,3 +1,5 @@
+import re
+import operator
 from django.db import models
 
 
@@ -21,8 +23,38 @@ class Shop(models.Model):
         qs = self.item_set.all().order_by(f'{ot}{ordered_by}')[:int(limit)]
         return [q.get_data() for q in qs]
 
-    def get_meaningful_terms(self):
-        pass
+    def get_meaningful_terms(self, limit):
+        '''
+        Returns a list with the 'limit' meaningful terms for this shop
+
+        Parameters:
+        -----------
+        limit: int
+            The number of terms to return
+        '''
+
+        limit = int(limit)
+
+        ignored_terms = 'a|an|and|the|of|for|is|are|was|were|has|have|at'
+
+        pattern = re.compile(f"\\b({ignored_terms})\\W", re.I)
+
+        data = {}
+
+        items = self.item_set.all()
+
+        for item in items:
+            name = pattern.sub("", item.name.lower())
+            terms = name.split(' ')
+            for t in terms:
+                if t not in data:
+                    data[t] = 1
+                else:
+                    data[t] += 1
+
+        sorted_data = sorted(data.items(), key=operator.itemgetter(1), reverse=True)
+
+        return {'titles': ['Term', 'Count'], 'data': list(sorted_data[:limit])}
 
     @staticmethod
     def get_shops_by_ids(shop_ids):

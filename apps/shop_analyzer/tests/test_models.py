@@ -27,8 +27,8 @@ class TestModels(TestCase):
         self.items = [
             {'item_id': 21354, 'name': 'The first item', 'description': 'the first title'},
             {'item_id': 23544, 'name': 'Second item', 'description': 'Second item'},
-            {'item_id': 23456, 'name': 'Other name', 'description': 'Other name'},
-            {'item_id': 67834, 'name': 'Same name', 'description': 'Same name'},
+            {'item_id': 23456, 'name': 'Other item name', 'description': 'Other name'},
+            {'item_id': 67834, 'name': 'Same item name', 'description': 'Same name'},
             {'item_id': 75466, 'name': 'What is your name', 'description': 'What is your name'},
             {'item_id': 56422, 'name': 'home work', 'description': 'home work'},
             {'item_id': 65456, 'name': 'Simon Data', 'description': 'Simon Data'},
@@ -48,3 +48,10 @@ class TestModels(TestCase):
         num_items = self.instance.get_num_items()
 
         self.assertEqual(len(self.items), num_items)
+
+    def test_get_meaningful_terms(self):
+        data = [{'term': 'item', 'count': 5}, {'term': 'data', 'count': 6}, {'term': 'name', 'count': 6}]
+
+        terms = self.instance.get_meaningful_terms(2)
+
+        self.assertEqual(terms, data)
