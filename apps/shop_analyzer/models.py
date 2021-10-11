@@ -2,6 +2,8 @@ import re
 import operator
 from django.db import models
 
+from django_admin_conf_vars.global_vars import config
+
 
 class Shop(models.Model):
     shop_id = models.IntegerField(db_index=True)
@@ -35,7 +37,7 @@ class Shop(models.Model):
 
         limit = int(limit)
 
-        ignored_terms = 'a|an|and|the|to|of|for|is|are|was|were|has|have|at'
+        ignored_terms = config.IGNORED_WORDS
 
         pattern = re.compile(f"\\b({ignored_terms})\\W", re.I)
 

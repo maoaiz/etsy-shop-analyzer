@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'django_admin_conf_vars'
 ]
 
 OUR_APPS = [
@@ -228,3 +229,4 @@ ETSY_SHOP_IDS = [
     19746707,  # CursedByDesign
     15224627,  # DISEDINA
 ]
+VARS_MODULE_PATH = 'etsy_shop_analyzer.global_vars'

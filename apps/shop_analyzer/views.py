@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django_admin_conf_vars.global_vars import config
 
 from apps.shop_analyzer.models import Shop
 from django.core.serializers.json import DjangoJSONEncoder
@@ -9,11 +10,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 def home(request):
 
     shops_qs = Shop.objects.all()
-    orders = [
-        'price',
-        'quantity',
-        'num_favorers',
-    ]
+    ignored_terms = config.IGNORED_WORDS
 
     return render(request, 'shop_analyzer/home.html', locals())
 
