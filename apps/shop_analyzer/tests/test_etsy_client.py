@@ -102,3 +102,12 @@ class TestEtsyClient(TestCase):
 
         mock_perform_request.assert_called_once()
         mock_perform_request.assert_called_with(f'/shops/{shop_id}')
+
+    @patch.object(EtsyClient, '_request_all')
+    def test_get_items_by_shop(self, mock_request_all):
+
+        shop_id = 123456
+        _ = self.client.get_items_by_shop(shop_id)
+
+        mock_request_all.assert_called_once()
+        mock_request_all.assert_called_with(f'/shops/{shop_id}/listings/active')
