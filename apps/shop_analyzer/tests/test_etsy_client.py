@@ -80,3 +80,12 @@ class TestEtsyClient(TestCase):
         # 2. 3 and 4,
         # 3. 5 (the last)
         self.assertEqual(calls, 3)
+
+    @patch.object(EtsyClient, '_request_all')
+    def test_get_shops_by_name(self, mock_request_all):
+
+        shop_name = 'my-shop'
+        _ = self.client.get_shops_by_name(shop_name)
+
+        mock_request_all.assert_called_once()
+        mock_request_all.assert_called_with(f'/shops?shop_name={shop_name}')
