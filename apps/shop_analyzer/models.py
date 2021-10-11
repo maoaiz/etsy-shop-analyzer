@@ -60,10 +60,10 @@ class Item(models.Model):
     item_id = models.IntegerField(db_index=True)  # to store 'listing_id'. Etsy calls listing to items
     name = models.CharField(max_length=256)
     description = models.TextField(null=True, blank=True)
-    price = models.DecimalField(decimal_places=6, max_digits=32)
-    currency_code = models.CharField(max_length=5)
-    quantity = models.IntegerField()
-    num_favorers = models.IntegerField()
+    price = models.DecimalField(decimal_places=6, max_digits=32, null=True, blank=True)
+    currency_code = models.CharField(max_length=5, null=True, blank=True)
+    quantity = models.IntegerField(null=True, blank=True)
+    num_favorers = models.IntegerField(null=True, blank=True)
     url = models.URLField(max_length=400, blank=True, null=True)
 
     created = models.DateTimeField(auto_now_add=True)

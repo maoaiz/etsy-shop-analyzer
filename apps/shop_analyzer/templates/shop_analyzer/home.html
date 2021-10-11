@@ -44,7 +44,11 @@
             <tbody>
               <tr v-for="(item, index) in selected_shop.data.top_data">
                 <td><span v-text="index + 1"></span></td>
-                <td><span v-text="item.name"></span> · <a :href="item.url" target="_blank" class="text-muted">View item</a></td>
+                <td>
+                  <div v-text="item.name"></div>
+                  <div v-text="item.title"></div>
+                  <a :href="item.url" target="_blank" class="text-muted">View item</a>
+                </td>
                 <td><span v-text="item[order_by]"></span></td>
               </tr>
             </tbody>
