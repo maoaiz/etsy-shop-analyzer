@@ -1,5 +1,4 @@
 ipython
-django_extensions
 pytest-django==4.4.0
 pytest-httpbin==1.0.0
 pytest-cov==3.0.0

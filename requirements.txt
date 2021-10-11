@@ -1,3 +1,4 @@
 django
 django-environ
 requests
+django_extensions
