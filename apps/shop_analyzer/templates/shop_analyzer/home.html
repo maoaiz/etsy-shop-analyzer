@@ -10,18 +10,61 @@
 <h2>Select a shop:</h2>
 <div class="row" id="app">
     <div class="col-sm-3">
-        <ul>
+      <form class="mb-4">
+        <label class="mb-2">
+          <span class="text-muted">Select the number of rows to show:</span>
+          <input type="number" v-model="limit" min='3' max='10' class="form-control">
+        </label>
+        <label class="mb-2">
+          <span class="text-muted">Order by</span>
+          <select v-model="order_type" class="form-control">
+            <option value="asc" >asc</option>
+            <option value="desc" >desc</option>
+          </select>
+        </label>
+        <label class="mb-2">
+          <span class="text-muted">Select the order:</span>
+          <select v-model="order_by" class="form-control">
+            <option v-for="oby in orders" :value="oby" v-text="oby"></option>
+          </select>
+        </label>
+
+        <div class="text-muted">Select the shop:</div>
+        <ul class="list-unstyled">
           <li v-for="shop in shops">
-            <a href="#" v-text="shop.name" v-on:click="get_data(shop)"></a>
+            <label>
+              <input type="radio" name="item_id" v-model="item_id" :value="shop.id" required="required" /> <span v-text="shop.name"></span>
+            </label>
           </li>
         </ul>
+        <hr>
+        <button class="btn btn-outline-primary" v-on:click="get_data($event)">Submit</button>
+      </form>
     </div>
     <div class="col-sm-9">
+      <div v-html="message"></div>
       <div class="background" v-if="selected_shop">
         <p>
           <a :href="selected_shop.url" v-text="selected_shop.name" target="_blank"></a> · <span class="text-muted" v-html="selected_shop.title"></span>
         </p>
-        <div v-text="message"></div>
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Num.</th>
+                <th>Item</th>
+                <th><span v-text="order_by"></span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in selected_shop.data.top_data">
+                <td><span v-text="index + 1"></span></td>
+                <td><span v-text="item.name"></span> · <a :href="item.url" target="_blank" class="text-muted">View item</a></td>
+                <td><span v-text="item[order_by]"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 </div>
@@ -50,37 +93,58 @@
       el: '#app',
       data: {
         shops: [{% for shop_obj in shops_qs %}
-          {id: {{ shop_obj.id }}, name: "{{ shop_obj.name }}", title: "{{ shop_obj.title }}", url: "{{ shop_obj.url }}"},
+          {id: {{ shop_obj.id }}, name: "{{ shop_obj.name }}", title: "{{ shop_obj.title }}", url: "{{ shop_obj.url }}", data: []},
         {% endfor %}],
         selected_shop: null,
-        message: message,
+        message: '',
+        limit: 5,
+        order_by: 'num_favorers',
+        order_type: 'desc',
+        orders: [{% for oby in orders %}'{{ oby }}',{% endfor %}],
+        item_id: null,
       },
       methods: {
-        get_data: function(shop){
-          this.selected_shop = shop;
+        get_data: function(e){
+          e.preventDefault();
+          let shop = this.shops.find(shop => shop.id == this.item_id);
 
-          // if the data is alread in the object we prevent go to the server
-          if (this.selected_shop.data){
-            this.message = `${this.selected_shop.name} has ${this.selected_shop.data.length} items`;
-            return;
+          if (!shop){
+            this.message = "Please select a shop";
+            return
           }
 
+          this.selected_shop = shop;
+
           this.message = message;
+
           var url = "{% url 'shop_analyzer:get_data' 0 %}";
           url = url.replace("/0/", "/" + shop.id + "/");
           axios
-            .get(url)
+            .get(url, {params: {'limit': this.limit, order_by: this.order_by, order_type: this.order_type}})
             .then(response => {
               if (response.status != 200){
                 console.log("Error");
               }else{
-                console.log(response.data)
                 this.selected_shop.data = response.data;
-                this.message = `${this.selected_shop.name} has ${this.selected_shop.data.length} items`;
+                this.message = `<strong>${this.selected_shop.name}</strong> has ${this.selected_shop.data.total_items} items. This is the Top ${this.limit}:`;
               }
             })
         },
       },
+      watch: {
+        item_id: function(a, b){
+          this.get_data(new Event("click"));
+        },
+        order_by: function(a, b){
+          this.get_data(new Event("click"));
+        },
+        order_type: function(a, b){
+          this.get_data(new Event("click"));
+        },
+        limit: function(a, b){
+          this.get_data(new Event("click"));
+        }
+      }
     });
   }
 

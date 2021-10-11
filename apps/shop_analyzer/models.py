@@ -13,8 +13,12 @@ class Shop(models.Model):
     def __str__(self):
         return self.name or f'<No name> id={self.id}'
 
-    def get_items_data(self):
-        qs = self.item_set.all()
+    def get_num_items(self):
+        return self.item_set.all().count()
+
+    def get_items_data(self, ordered_by='num_favorers', order_type="desc", limit=5):
+        ot = '-' if order_type == 'desc' else ''
+        qs = self.item_set.all().order_by(f'{ot}{ordered_by}')[:int(limit)]
         return [q.get_data() for q in qs]
 
     @staticmethod
