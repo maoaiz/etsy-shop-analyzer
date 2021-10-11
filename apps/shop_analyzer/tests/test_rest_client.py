@@ -1,7 +1,7 @@
-from unittest import TestCase
 import pytest_httpbin
+from unittest import TestCase
+
 from apps.shop_analyzer.integrations.rest_client import RestClient
-import os
 
 
 @pytest_httpbin.use_class_based_httpbin
@@ -35,4 +35,12 @@ class TestRestClient(TestCase):
         status, data = rest_client.perform_request('/get', params=params, method='GET')
         assert status == 200
         assert data['args'] == params
+        assert data['headers']['Content-Type'] == 'application/json'
+
+    def test_perform_post_request_with_params(self):
+        rest_client = RestClient(self.httpbin.url)
+        params = {'arg1': '3', 'arg2': '4'}
+        status, data = rest_client.perform_request('/post', params=params, method='POST')
+        assert status == 200
+        assert data['json'] == params
         assert data['headers']['Content-Type'] == 'application/json'
