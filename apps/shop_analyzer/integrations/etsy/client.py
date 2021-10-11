@@ -24,7 +24,7 @@ class EtsyClient(RestClient):
 
         self.logger = logging.getLogger(__name__)
 
-        api_url = f'https://openapi.etsy.com/v3/application'
+        api_url = 'https://openapi.etsy.com/v3/application'
 
         super().__init__(api_url, verbose=verbose)
 
