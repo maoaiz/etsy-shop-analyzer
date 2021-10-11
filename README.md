@@ -52,5 +52,5 @@ To run the test install the dev dependencies and run `pytest`:
 pip install -r requirements-dev.txt
 pytest
 # or with reports:
-pytest --cov-report term-missing
+pytest --cov --cov-report term-missing
 ```

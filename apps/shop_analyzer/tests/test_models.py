@@ -42,3 +42,9 @@ class TestModels(TestCase):
 
     def test_create_shop(self):
         self.assertIsInstance(self.instance, Shop)
+
+    def test_num_items_related(self):
+
+        num_items = self.instance.get_num_items()
+
+        self.assertEqual(len(self.items), num_items)
