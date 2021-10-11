@@ -58,6 +58,9 @@ class Shop(models.Model):
 
             # count the number of occurencies
             for t in terms:
+                if t == '':
+                    continue
+
                 if t not in data:
                     data[t] = 1
                 else:
