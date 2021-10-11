@@ -13,6 +13,10 @@ class Shop(models.Model):
     def __str__(self):
         return self.name or f'<No name> id={self.id}'
 
+    def get_items_data(self):
+        qs = self.item_set.all()
+        return [q.get_data() for q in qs]
+
     @staticmethod
     def get_shops_by_ids(shop_ids):
         '''
@@ -60,3 +64,15 @@ class Item(models.Model):
 
     def __str__(self):
         return self.name or f'<No name> id={self.id}'
+
+    def get_data(self):
+        return {
+            'item_id': self.item_id,
+            'name': self.name,
+            'description': self.description,
+            'price': self.price,
+            'currency_code': self.currency_code,
+            'quantity': self.quantity,
+            'num_favorers': self.num_favorers,
+            'url': self.url,
+        }

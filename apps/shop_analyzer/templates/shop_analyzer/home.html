@@ -5,7 +5,7 @@
 {% block content %}
 <h1>Shop Analyzer</h1>
 <hr>
-<p>We have synced {{ shops_qs.count }} shops.</p>
+<p>We have synced {{ shops_qs.count }} shops. <span class="text-muted text-xs">Data was synced in the background</span>.</p>
 
 <h2>Select a shop:</h2>
 <div class="row" id="app">
@@ -18,12 +18,10 @@
     </div>
     <div class="col-sm-9">
       <div class="background" v-if="selected_shop">
-        <h3 class="text-muted">Results:</h3>
         <p>
-          <a :href="selected_shop.url" v-text="selected_shop.name" target="_blank"></a>
-          <div v-text="selected_shop.title"></div>
-          
+          <a :href="selected_shop.url" v-text="selected_shop.name" target="_blank"></a> · <span class="text-muted" v-html="selected_shop.title"></span>
         </p>
+        <div v-text="message"></div>
       </div>
     </div>
 </div>
@@ -44,20 +42,36 @@
 
 {% block js %}
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.22.0/axios.min.js"></script>
 <script type="text/javascript">
   function init_vue(){
+    const message = "Loading, please wait...";
     var app = new Vue({
       el: '#app',
       data: {
         shops: [{% for shop_obj in shops_qs %}
           {id: {{ shop_obj.id }}, name: "{{ shop_obj.name }}", title: "{{ shop_obj.title }}", url: "{{ shop_obj.url }}"},
         {% endfor %}],
-        selected_shop: null
+        selected_shop: null,
+        message: message,
       },
       methods: {
-        get_data: function(shop_id){
-          console.log(shop_id)
-          this.selected_shop = shop_id;
+        get_data: function(shop){
+          this.message = message;
+          this.selected_shop = shop;
+          var url = "{% url 'shop_analyzer:get_data' 0 %}";
+          url = url.replace("/0/", "/" + shop.id + "/");
+          axios
+            .get(url)
+            .then(response => {
+              if (response.status != 200){
+                console.log("Error");
+              }else{
+                console.log(response.data)
+                this.selected_shop.data = response.data;
+                this.message = `${this.selected_shop.name} has ${this.selected_shop.data.length} items`;
+              }
+            })
         },
       },
     });
