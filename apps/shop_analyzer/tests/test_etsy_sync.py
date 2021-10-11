@@ -31,3 +31,13 @@ class TestEtsyClient(TestCase):
 
         mock_sync_shops.assert_called_once()
         mock_sync_items_for_new_shops.assert_called_once()
+
+    @patch.object(EtsySync, 'sync_shops')
+    @patch.object(EtsySync, 'sync_items_for_new_shops')
+    def test_sync_shops_called_with(self, mock_sync_items_for_new_shops, mock_sync_shops):
+
+        ids = [1, 2, 3]
+
+        self.sync.sync(shop_ids=ids)
+
+        mock_sync_shops.assert_called_with(ids)
