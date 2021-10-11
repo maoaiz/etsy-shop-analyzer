@@ -4,4 +4,67 @@
 
 {% block content %}
 <h1>Shop Analyzer</h1>
+<hr>
+<p>We have synced {{ shops_qs.count }} shops.</p>
+
+<h2>Select a shop:</h2>
+<div class="row" id="app">
+    <div class="col-sm-3">
+        <ul>
+          <li v-for="shop in shops">
+            <a href="#" v-text="shop.name" v-on:click="get_data(shop)"></a>
+          </li>
+        </ul>
+    </div>
+    <div class="col-sm-9">
+      <div class="background" v-if="selected_shop">
+        <h3 class="text-muted">Results:</h3>
+        <p>
+          <a :href="selected_shop.url" v-text="selected_shop.name" target="_blank"></a>
+          <div v-text="selected_shop.title"></div>
+          
+        </p>
+      </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block css %}
+<style type="text/css">
+  .background{
+    background-color: #efefef;
+    border-radius: 5px;
+    min-height: 100px;
+    min-width: 100%;
+    padding: 12px;
+  }
+</style>
+{% endblock %}
+
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+<script type="text/javascript">
+  function init_vue(){
+    var app = new Vue({
+      el: '#app',
+      data: {
+        shops: [{% for shop_obj in shops_qs %}
+          {id: {{ shop_obj.id }}, name: "{{ shop_obj.name }}", title: "{{ shop_obj.title }}", url: "{{ shop_obj.url }}"},
+        {% endfor %}],
+        selected_shop: null
+      },
+      methods: {
+        get_data: function(shop_id){
+          console.log(shop_id)
+          this.selected_shop = shop_id;
+        },
+      },
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    init_vue();
+  });
+</script>
 {% endblock %}
