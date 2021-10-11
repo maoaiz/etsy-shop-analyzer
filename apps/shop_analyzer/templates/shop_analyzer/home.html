@@ -61,6 +61,7 @@
 
           // if the data is alread in the object we prevent go to the server
           if (this.selected_shop.data){
+            this.message = `${this.selected_shop.name} has ${this.selected_shop.data.length} items`;
             return;
           }
 
