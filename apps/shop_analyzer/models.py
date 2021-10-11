@@ -21,6 +21,9 @@ class Shop(models.Model):
         qs = self.item_set.all().order_by(f'{ot}{ordered_by}')[:int(limit)]
         return [q.get_data() for q in qs]
 
+    def get_meaningful_terms(self):
+        pass
+
     @staticmethod
     def get_shops_by_ids(shop_ids):
         '''

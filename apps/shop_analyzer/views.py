@@ -20,17 +20,14 @@ def home(request):
 
 def get_data(request, s_pk):
     '''
-    Returns the top five items ordered by some field
+    Returns the top N meaningful terms for a shop
     '''
+
     shop_obj = get_object_or_404(Shop, pk=s_pk)
 
-    order_by = request.GET.get('order_by', 'num_favorers')
-    order_type = request.GET.get('order_type', 'desc')
     limit = request.GET.get('limit', 5)
 
-    top_data = shop_obj.get_items_data(
-        ordered_by=order_by, order_type=order_type, limit=limit
-    )
+    top_data = shop_obj.get_meaningful_terms(limit)
 
     data = {
         "total_items": shop_obj.get_num_items(),
