@@ -58,3 +58,25 @@ class TestEtsyClient(TestCase):
 
         mock_perform_request.assert_called_once()
         mock_perform_request.assert_called_with('/some-endpoint', params=params)
+
+    @patch.object(EtsyClient, 'perform_request')
+    def test_request_all_calls_perform_request_n_times(self, mock_perform_request):
+        '''Verify if the method RestClient.perform_request is called'''
+
+        response = {'count': 5, 'results': [{}, {}]}
+        params = {'limit': 2, 'offset': 0}
+
+        mock_perform_request.return_value = 200, response
+
+        response = self.client._request_all('/some-endpoint', **params)
+
+        # using generator
+        list(response)
+
+        calls = mock_perform_request.call_count
+
+        # 6 request have to exist with the next objects:
+        # 1. 1 and 2,
+        # 2. 3 and 4,
+        # 3. 5 (the last)
+        self.assertEqual(calls, 3)
