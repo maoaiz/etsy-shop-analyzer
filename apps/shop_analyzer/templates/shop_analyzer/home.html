@@ -28,7 +28,7 @@
     </div>
     <div class="col-sm-9">
       <div v-html="message"></div>
-      <div class="background" v-if="selected_shop">
+      <div class="background" v-if="selected_shop && selected_shop.terms.data">
         <p>
           <a :href="selected_shop.url" v-text="selected_shop.name" target="_blank"></a> · <span class="text-muted" v-html="selected_shop.title"></span>
         </p>
@@ -114,7 +114,7 @@
               }else{
                 this.selected_shop.terms = response.data.terms;
                 const total = response.data.total_items;
-                this.message = `<strong>${this.selected_shop.name}</strong> has ${total} items. This is the Top ${this.limit}:`;
+                this.message = `<strong>${this.selected_shop.name}</strong> has ${total} items.<br>This is the Top ${this.limit} of meaningful terms:`;
               }
             })
         },

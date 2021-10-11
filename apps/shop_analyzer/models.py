@@ -35,17 +35,26 @@ class Shop(models.Model):
 
         limit = int(limit)
 
-        ignored_terms = 'a|an|and|the|of|for|is|are|was|were|has|have|at'
+        ignored_terms = 'a|an|and|the|to|of|for|is|are|was|were|has|have|at'
 
         pattern = re.compile(f"\\b({ignored_terms})\\W", re.I)
 
-        data = {}
-
         items = self.item_set.all()
 
+        data = {}
+
         for item in items:
-            name = pattern.sub("", item.name.lower())
-            terms = name.split(' ')
+            word = f"{item.name} {item.description}"
+
+            # remove special characters
+            word = word.replace(',', '').replace('-', '')
+
+            # remove ignored words
+            word = pattern.sub("", word.lower())
+
+            terms = word.split(' ')
+
+            # count the number of occurencies
             for t in terms:
                 if t not in data:
                     data[t] = 1

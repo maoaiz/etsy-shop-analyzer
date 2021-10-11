@@ -50,7 +50,7 @@ class TestModels(TestCase):
         self.assertEqual(len(self.items), num_items)
 
     def test_get_meaningful_terms(self):
-        data = [{'term': 'item', 'count': 5}, {'term': 'data', 'count': 6}, {'term': 'name', 'count': 6}]
+        data = {'titles': ['Term', 'Count'], 'data': [('name', 6), ('data', 6)]}
 
         terms = self.instance.get_meaningful_terms(2)
 
