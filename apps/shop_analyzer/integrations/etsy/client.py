@@ -107,14 +107,14 @@ class EtsyClient(RestClient):
         self.logger.debug(f'Getting shops data by name "{shop_name}"')
         return self._request_all(f'/shops?shop_name={shop_name}')
 
-    def get_shop_by_id(self, user_id):
+    def get_shop_by_id(self, shop_id):
         """
         Returns a single shop.
         A shop is a store in Etsy platform.
         """
 
-        self.logger.debug(f'Getting shop by id: "{user_id}"')
-        _, response = self.perform_request(f'/shops/{user_id}')
+        self.logger.debug(f'Getting shop by id: "{shop_id}"')
+        _, response = self.perform_request(f'/shops/{shop_id}')
         return response
 
     def get_items_by_shop(self, shop_id):
